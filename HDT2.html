@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>hdt2</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="HDT2_files/libs/clipboard/clipboard.min.js"></script>
+<script src="HDT2_files/libs/quarto-html/quarto.js"></script>
+<script src="HDT2_files/libs/quarto-html/popper.min.js"></script>
+<script src="HDT2_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="HDT2_files/libs/quarto-html/anchor.min.js"></script>
+<link href="HDT2_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="HDT2_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="HDT2_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="HDT2_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="HDT2_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+
+
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.optim <span class="im">as</span> optim</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data <span class="im">import</span> DataLoader, TensorDataset</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_iris</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score, f1_score</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>iris <span class="op">=</span> load_iris()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> iris.data, iris.target</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>X_train, X_val, y_train, y_val <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tamaño del conjunto de entrenamiento: </span><span class="sc">{</span>X_train<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tamaño del conjunto de validación: </span><span class="sc">{</span>X_val<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tamaño del conjunto de entrenamiento: 120
+Tamaño del conjunto de validación: 30</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SimpleFeedForwardNN(nn.Module):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(SimpleFeedForwardNN, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Capa de entrada</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.input_layer <span class="op">=</span> nn.Linear(<span class="dv">4</span>, <span class="dv">10</span>)  <span class="co"># 4 características de entrada y 10 neuronas en la capa oculta</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Capa oculta</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.hidden_layer <span class="op">=</span> nn.Linear(<span class="dv">10</span>, <span class="dv">10</span>)  <span class="co"># 10 neuronas en la capa oculta y 10 en la siguiente</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Capa de salida</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.output_layer <span class="op">=</span> nn.Linear(<span class="dv">10</span>, <span class="dv">3</span>)  <span class="co"># 10 neuronas en la capa oculta y 3 neuronas de salida</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Pasar la entrada a través de la capa de entrada y luego aplicar ReLU</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> nn.ReLU()(<span class="va">self</span>.input_layer(x))</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Pasar la salida anterior a través de la capa oculta y luego aplicar ReLU</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> nn.ReLU()(<span class="va">self</span>.hidden_layer(x))</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Pasar la salida anterior a través de la capa de salida</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Nota: No aplicamos Softmax aquí porque durante el entrenamiento utilizaremos</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        <span class="co"># CrossEntropyLoss que ya aplica Softmax.</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.output_layer(x)</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>        </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> scaler.fit_transform(X)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> torch.tensor(X, dtype<span class="op">=</span>torch.float32)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> torch.tensor(y, dtype<span class="op">=</span>torch.int64)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>train_data <span class="op">=</span> TensorDataset(X_train, y_train)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>test_data <span class="op">=</span> TensorDataset(X_test, y_test)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>train_loader <span class="op">=</span> DataLoader(train_data, batch_size<span class="op">=</span><span class="dv">32</span>, shuffle<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>test_loader <span class="op">=</span> DataLoader(test_data, batch_size<span class="op">=</span><span class="dv">32</span>, shuffle<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> SimpleFeedForwardNN()</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.parameters())</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> optim.Adam(model.parameters(), lr<span class="op">=</span><span class="fl">0.001</span>)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>loss_functions <span class="op">=</span> {</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CrossEntropy"</span>: nn.CrossEntropyLoss(),</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MSELoss"</span>: nn.MSELoss(),</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SmoothL1Loss"</span>: nn.SmoothL1Loss()</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> evaluate_model(model, criterion, test_loader):</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    model.<span class="bu">eval</span>()</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    total_loss <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> torch.no_grad():</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> inputs, targets <span class="kw">in</span> test_loader:</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>            outputs <span class="op">=</span> model(inputs)</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> name <span class="kw">in</span> [<span class="st">"MSELoss"</span>, <span class="st">"SmoothL1Loss"</span>]:</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>                targets <span class="op">=</span> torch.nn.functional.one_hot(targets, <span class="dv">3</span>).<span class="bu">float</span>()</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>            loss <span class="op">=</span> criterion(outputs, targets)</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>            total_loss <span class="op">+=</span> loss.item()</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> total_loss <span class="op">/</span> <span class="bu">len</span>(test_loader)</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, criterion <span class="kw">in</span> loss_functions.items():</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>    model.<span class="bu">apply</span>(<span class="kw">lambda</span> m: m.reset_parameters() <span class="cf">if</span> <span class="bu">type</span>(m) <span class="op">==</span> nn.Linear <span class="cf">else</span> <span class="va">None</span>)</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">50</span>):</span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>        model.train()</span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>        total_loss <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> inputs, targets <span class="kw">in</span> train_loader:</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>            optimizer.zero_grad()</span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>            outputs <span class="op">=</span> model(inputs)</span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> name <span class="kw">in</span> [<span class="st">"MSELoss"</span>, <span class="st">"SmoothL1Loss"</span>]:</span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>                targets <span class="op">=</span> torch.nn.functional.one_hot(targets, <span class="dv">3</span>).<span class="bu">float</span>()</span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>            loss <span class="op">=</span> criterion(outputs, targets)</span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>            loss.backward()</span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>            optimizer.step()</span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>            total_loss <span class="op">+=</span> loss.item()</span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>        test_loss <span class="op">=</span> evaluate_model(model, criterion, test_loader)</span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Epoch </span><span class="sc">{</span>epoch<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss"> [</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">] - Training Loss: </span><span class="sc">{</span>total_loss <span class="op">/</span> <span class="bu">len</span>(train_loader)<span class="sc">:.4f}</span><span class="ss">, Test Loss: </span><span class="sc">{</span>test_loss<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;generator object Module.parameters at 0x000002A3A7BAF530&gt;
+Epoch 1 [CrossEntropy] - Training Loss: 1.1245, Test Loss: 1.1148
+Epoch 2 [CrossEntropy] - Training Loss: 1.1184, Test Loss: 1.1089
+Epoch 3 [CrossEntropy] - Training Loss: 1.1121, Test Loss: 1.1031
+Epoch 4 [CrossEntropy] - Training Loss: 1.1068, Test Loss: 1.0973
+Epoch 5 [CrossEntropy] - Training Loss: 1.1006, Test Loss: 1.0918
+Epoch 6 [CrossEntropy] - Training Loss: 1.0955, Test Loss: 1.0861
+Epoch 7 [CrossEntropy] - Training Loss: 1.0892, Test Loss: 1.0805
+Epoch 8 [CrossEntropy] - Training Loss: 1.0849, Test Loss: 1.0746
+Epoch 9 [CrossEntropy] - Training Loss: 1.0790, Test Loss: 1.0681
+Epoch 10 [CrossEntropy] - Training Loss: 1.0737, Test Loss: 1.0612
+Epoch 11 [CrossEntropy] - Training Loss: 1.0669, Test Loss: 1.0540
+Epoch 12 [CrossEntropy] - Training Loss: 1.0606, Test Loss: 1.0461
+Epoch 13 [CrossEntropy] - Training Loss: 1.0526, Test Loss: 1.0373
+Epoch 14 [CrossEntropy] - Training Loss: 1.0448, Test Loss: 1.0279
+Epoch 15 [CrossEntropy] - Training Loss: 1.0355, Test Loss: 1.0181
+Epoch 16 [CrossEntropy] - Training Loss: 1.0264, Test Loss: 1.0074
+Epoch 17 [CrossEntropy] - Training Loss: 1.0157, Test Loss: 0.9958
+Epoch 18 [CrossEntropy] - Training Loss: 1.0072, Test Loss: 0.9830
+Epoch 19 [CrossEntropy] - Training Loss: 0.9946, Test Loss: 0.9694
+Epoch 20 [CrossEntropy] - Training Loss: 0.9795, Test Loss: 0.9551
+Epoch 21 [CrossEntropy] - Training Loss: 0.9661, Test Loss: 0.9398
+Epoch 22 [CrossEntropy] - Training Loss: 0.9507, Test Loss: 0.9231
+Epoch 23 [CrossEntropy] - Training Loss: 0.9340, Test Loss: 0.9056
+Epoch 24 [CrossEntropy] - Training Loss: 0.9201, Test Loss: 0.8872
+Epoch 25 [CrossEntropy] - Training Loss: 0.9068, Test Loss: 0.8690
+Epoch 26 [CrossEntropy] - Training Loss: 0.8879, Test Loss: 0.8510
+Epoch 27 [CrossEntropy] - Training Loss: 0.8681, Test Loss: 0.8327
+Epoch 28 [CrossEntropy] - Training Loss: 0.8525, Test Loss: 0.8143
+Epoch 29 [CrossEntropy] - Training Loss: 0.8381, Test Loss: 0.7961
+Epoch 30 [CrossEntropy] - Training Loss: 0.8222, Test Loss: 0.7782
+Epoch 31 [CrossEntropy] - Training Loss: 0.7980, Test Loss: 0.7611
+Epoch 32 [CrossEntropy] - Training Loss: 0.7861, Test Loss: 0.7444
+Epoch 33 [CrossEntropy] - Training Loss: 0.7598, Test Loss: 0.7278
+Epoch 34 [CrossEntropy] - Training Loss: 0.7547, Test Loss: 0.7119
+Epoch 35 [CrossEntropy] - Training Loss: 0.7360, Test Loss: 0.6967
+Epoch 36 [CrossEntropy] - Training Loss: 0.7184, Test Loss: 0.6819
+Epoch 37 [CrossEntropy] - Training Loss: 0.7053, Test Loss: 0.6675
+Epoch 38 [CrossEntropy] - Training Loss: 0.6966, Test Loss: 0.6532
+Epoch 39 [CrossEntropy] - Training Loss: 0.6745, Test Loss: 0.6394
+Epoch 40 [CrossEntropy] - Training Loss: 0.6677, Test Loss: 0.6258
+Epoch 41 [CrossEntropy] - Training Loss: 0.6441, Test Loss: 0.6116
+Epoch 42 [CrossEntropy] - Training Loss: 0.6347, Test Loss: 0.5978
+Epoch 43 [CrossEntropy] - Training Loss: 0.6185, Test Loss: 0.5837
+Epoch 44 [CrossEntropy] - Training Loss: 0.6098, Test Loss: 0.5699
+Epoch 45 [CrossEntropy] - Training Loss: 0.5950, Test Loss: 0.5559
+Epoch 46 [CrossEntropy] - Training Loss: 0.5741, Test Loss: 0.5418
+Epoch 47 [CrossEntropy] - Training Loss: 0.5625, Test Loss: 0.5276
+Epoch 48 [CrossEntropy] - Training Loss: 0.5463, Test Loss: 0.5141
+Epoch 49 [CrossEntropy] - Training Loss: 0.5336, Test Loss: 0.5004
+Epoch 50 [CrossEntropy] - Training Loss: 0.5250, Test Loss: 0.4869
+Epoch 1 [MSELoss] - Training Loss: 0.4643, Test Loss: 0.4515
+Epoch 2 [MSELoss] - Training Loss: 0.4479, Test Loss: 0.4272
+Epoch 3 [MSELoss] - Training Loss: 0.4208, Test Loss: 0.3994
+Epoch 4 [MSELoss] - Training Loss: 0.3965, Test Loss: 0.3697
+Epoch 5 [MSELoss] - Training Loss: 0.3629, Test Loss: 0.3370
+Epoch 6 [MSELoss] - Training Loss: 0.3317, Test Loss: 0.3065
+Epoch 7 [MSELoss] - Training Loss: 0.3017, Test Loss: 0.2792
+Epoch 8 [MSELoss] - Training Loss: 0.2774, Test Loss: 0.2558
+Epoch 9 [MSELoss] - Training Loss: 0.2595, Test Loss: 0.2361
+Epoch 10 [MSELoss] - Training Loss: 0.2382, Test Loss: 0.2201
+Epoch 11 [MSELoss] - Training Loss: 0.2265, Test Loss: 0.2068
+Epoch 12 [MSELoss] - Training Loss: 0.2170, Test Loss: 0.1960
+Epoch 13 [MSELoss] - Training Loss: 0.2046, Test Loss: 0.1869
+Epoch 14 [MSELoss] - Training Loss: 0.1996, Test Loss: 0.1788
+Epoch 15 [MSELoss] - Training Loss: 0.1918, Test Loss: 0.1717
+Epoch 16 [MSELoss] - Training Loss: 0.1884, Test Loss: 0.1652
+Epoch 17 [MSELoss] - Training Loss: 0.1814, Test Loss: 0.1595
+Epoch 18 [MSELoss] - Training Loss: 0.1735, Test Loss: 0.1543
+Epoch 19 [MSELoss] - Training Loss: 0.1684, Test Loss: 0.1496
+Epoch 20 [MSELoss] - Training Loss: 0.1652, Test Loss: 0.1455
+Epoch 21 [MSELoss] - Training Loss: 0.1657, Test Loss: 0.1419
+Epoch 22 [MSELoss] - Training Loss: 0.1564, Test Loss: 0.1389
+Epoch 23 [MSELoss] - Training Loss: 0.1562, Test Loss: 0.1363
+Epoch 24 [MSELoss] - Training Loss: 0.1502, Test Loss: 0.1340
+Epoch 25 [MSELoss] - Training Loss: 0.1507, Test Loss: 0.1320
+Epoch 26 [MSELoss] - Training Loss: 0.1520, Test Loss: 0.1301
+Epoch 27 [MSELoss] - Training Loss: 0.1468, Test Loss: 0.1285
+Epoch 28 [MSELoss] - Training Loss: 0.1450, Test Loss: 0.1270
+Epoch 29 [MSELoss] - Training Loss: 0.1437, Test Loss: 0.1258
+Epoch 30 [MSELoss] - Training Loss: 0.1414, Test Loss: 0.1247
+Epoch 31 [MSELoss] - Training Loss: 0.1410, Test Loss: 0.1236
+Epoch 32 [MSELoss] - Training Loss: 0.1386, Test Loss: 0.1225
+Epoch 33 [MSELoss] - Training Loss: 0.1380, Test Loss: 0.1215
+Epoch 34 [MSELoss] - Training Loss: 0.1354, Test Loss: 0.1204
+Epoch 35 [MSELoss] - Training Loss: 0.1337, Test Loss: 0.1194
+Epoch 36 [MSELoss] - Training Loss: 0.1330, Test Loss: 0.1184
+Epoch 37 [MSELoss] - Training Loss: 0.1329, Test Loss: 0.1174
+Epoch 38 [MSELoss] - Training Loss: 0.1291, Test Loss: 0.1164
+Epoch 39 [MSELoss] - Training Loss: 0.1292, Test Loss: 0.1155
+Epoch 40 [MSELoss] - Training Loss: 0.1259, Test Loss: 0.1145
+Epoch 41 [MSELoss] - Training Loss: 0.1264, Test Loss: 0.1134
+Epoch 42 [MSELoss] - Training Loss: 0.1251, Test Loss: 0.1123
+Epoch 43 [MSELoss] - Training Loss: 0.1228, Test Loss: 0.1113
+Epoch 44 [MSELoss] - Training Loss: 0.1225, Test Loss: 0.1102
+Epoch 45 [MSELoss] - Training Loss: 0.1207, Test Loss: 0.1092
+Epoch 46 [MSELoss] - Training Loss: 0.1236, Test Loss: 0.1080
+Epoch 47 [MSELoss] - Training Loss: 0.1211, Test Loss: 0.1070
+Epoch 48 [MSELoss] - Training Loss: 0.1173, Test Loss: 0.1060
+Epoch 49 [MSELoss] - Training Loss: 0.1162, Test Loss: 0.1051
+Epoch 50 [MSELoss] - Training Loss: 0.1156, Test Loss: 0.1040
+Epoch 1 [SmoothL1Loss] - Training Loss: 0.2133, Test Loss: 0.2010
+Epoch 2 [SmoothL1Loss] - Training Loss: 0.2092, Test Loss: 0.1950
+Epoch 3 [SmoothL1Loss] - Training Loss: 0.2021, Test Loss: 0.1876
+Epoch 4 [SmoothL1Loss] - Training Loss: 0.1948, Test Loss: 0.1795
+Epoch 5 [SmoothL1Loss] - Training Loss: 0.1859, Test Loss: 0.1713
+Epoch 6 [SmoothL1Loss] - Training Loss: 0.1792, Test Loss: 0.1632
+Epoch 7 [SmoothL1Loss] - Training Loss: 0.1708, Test Loss: 0.1554
+Epoch 8 [SmoothL1Loss] - Training Loss: 0.1627, Test Loss: 0.1480
+Epoch 9 [SmoothL1Loss] - Training Loss: 0.1552, Test Loss: 0.1410
+Epoch 10 [SmoothL1Loss] - Training Loss: 0.1480, Test Loss: 0.1344
+Epoch 11 [SmoothL1Loss] - Training Loss: 0.1398, Test Loss: 0.1282
+Epoch 12 [SmoothL1Loss] - Training Loss: 0.1335, Test Loss: 0.1225
+Epoch 13 [SmoothL1Loss] - Training Loss: 0.1276, Test Loss: 0.1173
+Epoch 14 [SmoothL1Loss] - Training Loss: 0.1234, Test Loss: 0.1125
+Epoch 15 [SmoothL1Loss] - Training Loss: 0.1193, Test Loss: 0.1082
+Epoch 16 [SmoothL1Loss] - Training Loss: 0.1129, Test Loss: 0.1043
+Epoch 17 [SmoothL1Loss] - Training Loss: 0.1087, Test Loss: 0.1008
+Epoch 18 [SmoothL1Loss] - Training Loss: 0.1050, Test Loss: 0.0975
+Epoch 19 [SmoothL1Loss] - Training Loss: 0.1018, Test Loss: 0.0944
+Epoch 20 [SmoothL1Loss] - Training Loss: 0.0971, Test Loss: 0.0916
+Epoch 21 [SmoothL1Loss] - Training Loss: 0.0942, Test Loss: 0.0888
+Epoch 22 [SmoothL1Loss] - Training Loss: 0.0910, Test Loss: 0.0861
+Epoch 23 [SmoothL1Loss] - Training Loss: 0.0880, Test Loss: 0.0835
+Epoch 24 [SmoothL1Loss] - Training Loss: 0.0848, Test Loss: 0.0809
+Epoch 25 [SmoothL1Loss] - Training Loss: 0.0824, Test Loss: 0.0784
+Epoch 26 [SmoothL1Loss] - Training Loss: 0.0801, Test Loss: 0.0759
+Epoch 27 [SmoothL1Loss] - Training Loss: 0.0771, Test Loss: 0.0735
+Epoch 28 [SmoothL1Loss] - Training Loss: 0.0745, Test Loss: 0.0711
+Epoch 29 [SmoothL1Loss] - Training Loss: 0.0713, Test Loss: 0.0688
+Epoch 30 [SmoothL1Loss] - Training Loss: 0.0700, Test Loss: 0.0664
+Epoch 31 [SmoothL1Loss] - Training Loss: 0.0670, Test Loss: 0.0641
+Epoch 32 [SmoothL1Loss] - Training Loss: 0.0652, Test Loss: 0.0619
+Epoch 33 [SmoothL1Loss] - Training Loss: 0.0630, Test Loss: 0.0598
+Epoch 34 [SmoothL1Loss] - Training Loss: 0.0603, Test Loss: 0.0579
+Epoch 35 [SmoothL1Loss] - Training Loss: 0.0600, Test Loss: 0.0561
+Epoch 36 [SmoothL1Loss] - Training Loss: 0.0584, Test Loss: 0.0544
+Epoch 37 [SmoothL1Loss] - Training Loss: 0.0559, Test Loss: 0.0529
+Epoch 38 [SmoothL1Loss] - Training Loss: 0.0543, Test Loss: 0.0515
+Epoch 39 [SmoothL1Loss] - Training Loss: 0.0532, Test Loss: 0.0503
+Epoch 40 [SmoothL1Loss] - Training Loss: 0.0523, Test Loss: 0.0492
+Epoch 41 [SmoothL1Loss] - Training Loss: 0.0519, Test Loss: 0.0482
+Epoch 42 [SmoothL1Loss] - Training Loss: 0.0512, Test Loss: 0.0472
+Epoch 43 [SmoothL1Loss] - Training Loss: 0.0502, Test Loss: 0.0463
+Epoch 44 [SmoothL1Loss] - Training Loss: 0.0497, Test Loss: 0.0455
+Epoch 45 [SmoothL1Loss] - Training Loss: 0.0492, Test Loss: 0.0448
+Epoch 46 [SmoothL1Loss] - Training Loss: 0.0467, Test Loss: 0.0440
+Epoch 47 [SmoothL1Loss] - Training Loss: 0.0474, Test Loss: 0.0434
+Epoch 48 [SmoothL1Loss] - Training Loss: 0.0472, Test Loss: 0.0428
+Epoch 49 [SmoothL1Loss] - Training Loss: 0.0468, Test Loss: 0.0422
+Epoch 50 [SmoothL1Loss] - Training Loss: 0.0452, Test Loss: 0.0416</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Redefinimos la red neuronal con Dropout</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> RegularizedFeedForwardNN(nn.Module):</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, dropout_rate<span class="op">=</span><span class="fl">0.0</span>):</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(RegularizedFeedForwardNN, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.input_layer <span class="op">=</span> nn.Linear(<span class="dv">4</span>, <span class="dv">10</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.hidden_layer <span class="op">=</span> nn.Linear(<span class="dv">10</span>, <span class="dv">10</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.output_layer <span class="op">=</span> nn.Linear(<span class="dv">10</span>, <span class="dv">3</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.dropout <span class="op">=</span> nn.Dropout(dropout_rate)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> nn.ReLU()(<span class="va">self</span>.input_layer(x))</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.dropout(x)  <span class="co"># Aplicar dropout</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> nn.ReLU()(<span class="va">self</span>.hidden_layer(x))</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.dropout(x)  <span class="co"># Aplicar dropout</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.output_layer(x)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> x</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co"># L1 Regularización</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> l1_penalty(model):</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">sum</span>(torch.<span class="bu">sum</span>(torch.<span class="bu">abs</span>(p)) <span class="cf">for</span> p <span class="kw">in</span> model.parameters())</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Función de entrenamiento con regularización L1</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> train_with_l1(model, criterion, optimizer, train_loader, l1_lambda):</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    model.train()</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    total_loss <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> inputs, targets <span class="kw">in</span> train_loader:</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>        optimizer.zero_grad()</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>        outputs <span class="op">=</span> model(inputs)</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> criterion(outputs, targets) <span class="op">+</span> l1_lambda <span class="op">*</span> l1_penalty(model)</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>        loss.backward()</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>        optimizer.step()</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>        total_loss <span class="op">+=</span> loss.item()</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> total_loss <span class="op">/</span> <span class="bu">len</span>(train_loader)</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Hyperparámetros</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>EPOCHS <span class="op">=</span> <span class="dv">50</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>L1_LAMBDA <span class="op">=</span> <span class="fl">0.001</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>DROPOUT_RATE <span class="op">=</span> <span class="fl">0.5</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Modelos con y sin regularización</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>models <span class="op">=</span> {</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Base Model"</span>: RegularizedFeedForwardNN(dropout_rate<span class="op">=</span><span class="fl">0.0</span>),</span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Dropout"</span>: RegularizedFeedForwardNN(dropout_rate<span class="op">=</span>DROPOUT_RATE),</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>    <span class="st">"L1"</span>: RegularizedFeedForwardNN(dropout_rate<span class="op">=</span><span class="fl">0.0</span>),</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>    <span class="st">"L2"</span>: RegularizedFeedForwardNN(dropout_rate<span class="op">=</span><span class="fl">0.0</span>)</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>optimizers <span class="op">=</span> {</span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>    name: optim.Adam(model.parameters(), lr<span class="op">=</span><span class="fl">0.001</span>, weight_decay<span class="op">=</span>(<span class="fl">0.01</span> <span class="cf">if</span> name <span class="op">==</span> <span class="st">"L2"</span> <span class="cf">else</span> <span class="dv">0</span>))</span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> name, model <span class="kw">in</span> models.items()</span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, model <span class="kw">in</span> models.items():</span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>    optimizer <span class="op">=</span> optimizers[name]</span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(EPOCHS):</span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> name <span class="op">==</span> <span class="st">"L1"</span>:</span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a>            train_loss <span class="op">=</span> train_with_l1(model, nn.CrossEntropyLoss(), optimizer, train_loader, L1_LAMBDA)</span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a>            train_loss <span class="op">=</span> evaluate_model(model, nn.CrossEntropyLoss(), train_loader)</span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a>        test_loss <span class="op">=</span> evaluate_model(model, nn.CrossEntropyLoss(), test_loader)</span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Epoch </span><span class="sc">{</span>epoch<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss"> [</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">] - Training Loss: </span><span class="sc">{</span>train_loss<span class="sc">:.4f}</span><span class="ss">, Test Loss: </span><span class="sc">{</span>test_loss<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Epoch 1 [Base Model] - Training Loss: 1.1241, Test Loss: 1.1131
+Epoch 2 [Base Model] - Training Loss: 1.1229, Test Loss: 1.1131
+Epoch 3 [Base Model] - Training Loss: 1.1240, Test Loss: 1.1131
+Epoch 4 [Base Model] - Training Loss: 1.1246, Test Loss: 1.1131
+Epoch 5 [Base Model] - Training Loss: 1.1239, Test Loss: 1.1131
+Epoch 6 [Base Model] - Training Loss: 1.1222, Test Loss: 1.1131
+Epoch 7 [Base Model] - Training Loss: 1.1235, Test Loss: 1.1131
+Epoch 8 [Base Model] - Training Loss: 1.1235, Test Loss: 1.1131
+Epoch 9 [Base Model] - Training Loss: 1.1229, Test Loss: 1.1131
+Epoch 10 [Base Model] - Training Loss: 1.1235, Test Loss: 1.1131
+Epoch 11 [Base Model] - Training Loss: 1.1232, Test Loss: 1.1131
+Epoch 12 [Base Model] - Training Loss: 1.1247, Test Loss: 1.1131
+Epoch 13 [Base Model] - Training Loss: 1.1243, Test Loss: 1.1131
+Epoch 14 [Base Model] - Training Loss: 1.1233, Test Loss: 1.1131
+Epoch 15 [Base Model] - Training Loss: 1.1237, Test Loss: 1.1131
+Epoch 16 [Base Model] - Training Loss: 1.1231, Test Loss: 1.1131
+Epoch 17 [Base Model] - Training Loss: 1.1237, Test Loss: 1.1131
+Epoch 18 [Base Model] - Training Loss: 1.1234, Test Loss: 1.1131
+Epoch 19 [Base Model] - Training Loss: 1.1243, Test Loss: 1.1131
+Epoch 20 [Base Model] - Training Loss: 1.1231, Test Loss: 1.1131
+Epoch 21 [Base Model] - Training Loss: 1.1234, Test Loss: 1.1131
+Epoch 22 [Base Model] - Training Loss: 1.1229, Test Loss: 1.1131
+Epoch 23 [Base Model] - Training Loss: 1.1236, Test Loss: 1.1131
+Epoch 24 [Base Model] - Training Loss: 1.1237, Test Loss: 1.1131
+Epoch 25 [Base Model] - Training Loss: 1.1235, Test Loss: 1.1131
+Epoch 26 [Base Model] - Training Loss: 1.1230, Test Loss: 1.1131
+Epoch 27 [Base Model] - Training Loss: 1.1246, Test Loss: 1.1131
+Epoch 28 [Base Model] - Training Loss: 1.1234, Test Loss: 1.1131
+Epoch 29 [Base Model] - Training Loss: 1.1240, Test Loss: 1.1131
+Epoch 30 [Base Model] - Training Loss: 1.1228, Test Loss: 1.1131
+Epoch 31 [Base Model] - Training Loss: 1.1239, Test Loss: 1.1131
+Epoch 32 [Base Model] - Training Loss: 1.1232, Test Loss: 1.1131
+Epoch 33 [Base Model] - Training Loss: 1.1245, Test Loss: 1.1131
+Epoch 34 [Base Model] - Training Loss: 1.1239, Test Loss: 1.1131
+Epoch 35 [Base Model] - Training Loss: 1.1241, Test Loss: 1.1131
+Epoch 36 [Base Model] - Training Loss: 1.1234, Test Loss: 1.1131
+Epoch 37 [Base Model] - Training Loss: 1.1232, Test Loss: 1.1131
+Epoch 38 [Base Model] - Training Loss: 1.1226, Test Loss: 1.1131
+Epoch 39 [Base Model] - Training Loss: 1.1227, Test Loss: 1.1131
+Epoch 40 [Base Model] - Training Loss: 1.1235, Test Loss: 1.1131
+Epoch 41 [Base Model] - Training Loss: 1.1244, Test Loss: 1.1131
+Epoch 42 [Base Model] - Training Loss: 1.1247, Test Loss: 1.1131
+Epoch 43 [Base Model] - Training Loss: 1.1234, Test Loss: 1.1131
+Epoch 44 [Base Model] - Training Loss: 1.1224, Test Loss: 1.1131
+Epoch 45 [Base Model] - Training Loss: 1.1242, Test Loss: 1.1131
+Epoch 46 [Base Model] - Training Loss: 1.1243, Test Loss: 1.1131
+Epoch 47 [Base Model] - Training Loss: 1.1242, Test Loss: 1.1131
+Epoch 48 [Base Model] - Training Loss: 1.1230, Test Loss: 1.1131
+Epoch 49 [Base Model] - Training Loss: 1.1240, Test Loss: 1.1131
+Epoch 50 [Base Model] - Training Loss: 1.1237, Test Loss: 1.1131
+Epoch 1 [Dropout] - Training Loss: 1.1147, Test Loss: 1.1119
+Epoch 2 [Dropout] - Training Loss: 1.1169, Test Loss: 1.1119
+Epoch 3 [Dropout] - Training Loss: 1.1152, Test Loss: 1.1119
+Epoch 4 [Dropout] - Training Loss: 1.1163, Test Loss: 1.1119
+Epoch 5 [Dropout] - Training Loss: 1.1166, Test Loss: 1.1119
+Epoch 6 [Dropout] - Training Loss: 1.1152, Test Loss: 1.1119
+Epoch 7 [Dropout] - Training Loss: 1.1164, Test Loss: 1.1119
+Epoch 8 [Dropout] - Training Loss: 1.1161, Test Loss: 1.1119
+Epoch 9 [Dropout] - Training Loss: 1.1160, Test Loss: 1.1119
+Epoch 10 [Dropout] - Training Loss: 1.1157, Test Loss: 1.1119
+Epoch 11 [Dropout] - Training Loss: 1.1144, Test Loss: 1.1119
+Epoch 12 [Dropout] - Training Loss: 1.1163, Test Loss: 1.1119
+Epoch 13 [Dropout] - Training Loss: 1.1159, Test Loss: 1.1119
+Epoch 14 [Dropout] - Training Loss: 1.1155, Test Loss: 1.1119
+Epoch 15 [Dropout] - Training Loss: 1.1157, Test Loss: 1.1119
+Epoch 16 [Dropout] - Training Loss: 1.1160, Test Loss: 1.1119
+Epoch 17 [Dropout] - Training Loss: 1.1161, Test Loss: 1.1119
+Epoch 18 [Dropout] - Training Loss: 1.1164, Test Loss: 1.1119
+Epoch 19 [Dropout] - Training Loss: 1.1173, Test Loss: 1.1119
+Epoch 20 [Dropout] - Training Loss: 1.1151, Test Loss: 1.1119
+Epoch 21 [Dropout] - Training Loss: 1.1153, Test Loss: 1.1119
+Epoch 22 [Dropout] - Training Loss: 1.1160, Test Loss: 1.1119
+Epoch 23 [Dropout] - Training Loss: 1.1162, Test Loss: 1.1119
+Epoch 24 [Dropout] - Training Loss: 1.1162, Test Loss: 1.1119
+Epoch 25 [Dropout] - Training Loss: 1.1167, Test Loss: 1.1119
+Epoch 26 [Dropout] - Training Loss: 1.1169, Test Loss: 1.1119
+Epoch 27 [Dropout] - Training Loss: 1.1141, Test Loss: 1.1119
+Epoch 28 [Dropout] - Training Loss: 1.1148, Test Loss: 1.1119
+Epoch 29 [Dropout] - Training Loss: 1.1163, Test Loss: 1.1119
+Epoch 30 [Dropout] - Training Loss: 1.1172, Test Loss: 1.1119
+Epoch 31 [Dropout] - Training Loss: 1.1164, Test Loss: 1.1119
+Epoch 32 [Dropout] - Training Loss: 1.1156, Test Loss: 1.1119
+Epoch 33 [Dropout] - Training Loss: 1.1164, Test Loss: 1.1119
+Epoch 34 [Dropout] - Training Loss: 1.1159, Test Loss: 1.1119
+Epoch 35 [Dropout] - Training Loss: 1.1154, Test Loss: 1.1119
+Epoch 36 [Dropout] - Training Loss: 1.1172, Test Loss: 1.1119
+Epoch 37 [Dropout] - Training Loss: 1.1165, Test Loss: 1.1119
+Epoch 38 [Dropout] - Training Loss: 1.1149, Test Loss: 1.1119
+Epoch 39 [Dropout] - Training Loss: 1.1159, Test Loss: 1.1119
+Epoch 40 [Dropout] - Training Loss: 1.1161, Test Loss: 1.1119
+Epoch 41 [Dropout] - Training Loss: 1.1159, Test Loss: 1.1119
+Epoch 42 [Dropout] - Training Loss: 1.1149, Test Loss: 1.1119
+Epoch 43 [Dropout] - Training Loss: 1.1142, Test Loss: 1.1119
+Epoch 44 [Dropout] - Training Loss: 1.1161, Test Loss: 1.1119
+Epoch 45 [Dropout] - Training Loss: 1.1167, Test Loss: 1.1119
+Epoch 46 [Dropout] - Training Loss: 1.1159, Test Loss: 1.1119
+Epoch 47 [Dropout] - Training Loss: 1.1176, Test Loss: 1.1119
+Epoch 48 [Dropout] - Training Loss: 1.1156, Test Loss: 1.1119
+Epoch 49 [Dropout] - Training Loss: 1.1165, Test Loss: 1.1119
+Epoch 50 [Dropout] - Training Loss: 1.1154, Test Loss: 1.1119
+Epoch 1 [L1] - Training Loss: 1.1156, Test Loss: 1.0850
+Epoch 2 [L1] - Training Loss: 1.1084, Test Loss: 1.0762
+Epoch 3 [L1] - Training Loss: 1.0997, Test Loss: 1.0674
+Epoch 4 [L1] - Training Loss: 1.0912, Test Loss: 1.0587
+Epoch 5 [L1] - Training Loss: 1.0850, Test Loss: 1.0501
+Epoch 6 [L1] - Training Loss: 1.0771, Test Loss: 1.0416
+Epoch 7 [L1] - Training Loss: 1.0685, Test Loss: 1.0330
+Epoch 8 [L1] - Training Loss: 1.0624, Test Loss: 1.0248
+Epoch 9 [L1] - Training Loss: 1.0548, Test Loss: 1.0162
+Epoch 10 [L1] - Training Loss: 1.0473, Test Loss: 1.0072
+Epoch 11 [L1] - Training Loss: 1.0395, Test Loss: 0.9979
+Epoch 12 [L1] - Training Loss: 1.0309, Test Loss: 0.9887
+Epoch 13 [L1] - Training Loss: 1.0225, Test Loss: 0.9786
+Epoch 14 [L1] - Training Loss: 1.0138, Test Loss: 0.9679
+Epoch 15 [L1] - Training Loss: 1.0034, Test Loss: 0.9569
+Epoch 16 [L1] - Training Loss: 0.9941, Test Loss: 0.9454
+Epoch 17 [L1] - Training Loss: 0.9823, Test Loss: 0.9336
+Epoch 18 [L1] - Training Loss: 0.9732, Test Loss: 0.9215
+Epoch 19 [L1] - Training Loss: 0.9607, Test Loss: 0.9090
+Epoch 20 [L1] - Training Loss: 0.9504, Test Loss: 0.8956
+Epoch 21 [L1] - Training Loss: 0.9358, Test Loss: 0.8823
+Epoch 22 [L1] - Training Loss: 0.9270, Test Loss: 0.8679
+Epoch 23 [L1] - Training Loss: 0.9132, Test Loss: 0.8530
+Epoch 24 [L1] - Training Loss: 0.8984, Test Loss: 0.8380
+Epoch 25 [L1] - Training Loss: 0.8881, Test Loss: 0.8226
+Epoch 26 [L1] - Training Loss: 0.8724, Test Loss: 0.8069
+Epoch 27 [L1] - Training Loss: 0.8610, Test Loss: 0.7906
+Epoch 28 [L1] - Training Loss: 0.8425, Test Loss: 0.7744
+Epoch 29 [L1] - Training Loss: 0.8282, Test Loss: 0.7583
+Epoch 30 [L1] - Training Loss: 0.8152, Test Loss: 0.7419
+Epoch 31 [L1] - Training Loss: 0.8002, Test Loss: 0.7255
+Epoch 32 [L1] - Training Loss: 0.7888, Test Loss: 0.7088
+Epoch 33 [L1] - Training Loss: 0.7698, Test Loss: 0.6929
+Epoch 34 [L1] - Training Loss: 0.7567, Test Loss: 0.6772
+Epoch 35 [L1] - Training Loss: 0.7428, Test Loss: 0.6619
+Epoch 36 [L1] - Training Loss: 0.7321, Test Loss: 0.6468
+Epoch 37 [L1] - Training Loss: 0.7168, Test Loss: 0.6319
+Epoch 38 [L1] - Training Loss: 0.7017, Test Loss: 0.6176
+Epoch 39 [L1] - Training Loss: 0.6879, Test Loss: 0.6033
+Epoch 40 [L1] - Training Loss: 0.6749, Test Loss: 0.5892
+Epoch 41 [L1] - Training Loss: 0.6576, Test Loss: 0.5753
+Epoch 42 [L1] - Training Loss: 0.6377, Test Loss: 0.5617
+Epoch 43 [L1] - Training Loss: 0.6330, Test Loss: 0.5481
+Epoch 44 [L1] - Training Loss: 0.6165, Test Loss: 0.5349
+Epoch 45 [L1] - Training Loss: 0.6097, Test Loss: 0.5219
+Epoch 46 [L1] - Training Loss: 0.5943, Test Loss: 0.5090
+Epoch 47 [L1] - Training Loss: 0.5765, Test Loss: 0.4964
+Epoch 48 [L1] - Training Loss: 0.5693, Test Loss: 0.4839
+Epoch 49 [L1] - Training Loss: 0.5614, Test Loss: 0.4713
+Epoch 50 [L1] - Training Loss: 0.5474, Test Loss: 0.4591
+Epoch 1 [L2] - Training Loss: 1.1233, Test Loss: 1.1090
+Epoch 2 [L2] - Training Loss: 1.1197, Test Loss: 1.1090
+Epoch 3 [L2] - Training Loss: 1.1213, Test Loss: 1.1090
+Epoch 4 [L2] - Training Loss: 1.1210, Test Loss: 1.1090
+Epoch 5 [L2] - Training Loss: 1.1222, Test Loss: 1.1090
+Epoch 6 [L2] - Training Loss: 1.1221, Test Loss: 1.1090
+Epoch 7 [L2] - Training Loss: 1.1213, Test Loss: 1.1090
+Epoch 8 [L2] - Training Loss: 1.1227, Test Loss: 1.1090
+Epoch 9 [L2] - Training Loss: 1.1205, Test Loss: 1.1090
+Epoch 10 [L2] - Training Loss: 1.1222, Test Loss: 1.1090
+Epoch 11 [L2] - Training Loss: 1.1216, Test Loss: 1.1090
+Epoch 12 [L2] - Training Loss: 1.1215, Test Loss: 1.1090
+Epoch 13 [L2] - Training Loss: 1.1225, Test Loss: 1.1090
+Epoch 14 [L2] - Training Loss: 1.1230, Test Loss: 1.1090
+Epoch 15 [L2] - Training Loss: 1.1216, Test Loss: 1.1090
+Epoch 16 [L2] - Training Loss: 1.1214, Test Loss: 1.1090
+Epoch 17 [L2] - Training Loss: 1.1217, Test Loss: 1.1090
+Epoch 18 [L2] - Training Loss: 1.1196, Test Loss: 1.1090
+Epoch 19 [L2] - Training Loss: 1.1215, Test Loss: 1.1090
+Epoch 20 [L2] - Training Loss: 1.1211, Test Loss: 1.1090
+Epoch 21 [L2] - Training Loss: 1.1212, Test Loss: 1.1090
+Epoch 22 [L2] - Training Loss: 1.1218, Test Loss: 1.1090
+Epoch 23 [L2] - Training Loss: 1.1224, Test Loss: 1.1090
+Epoch 24 [L2] - Training Loss: 1.1224, Test Loss: 1.1090
+Epoch 25 [L2] - Training Loss: 1.1209, Test Loss: 1.1090
+Epoch 26 [L2] - Training Loss: 1.1218, Test Loss: 1.1090
+Epoch 27 [L2] - Training Loss: 1.1207, Test Loss: 1.1090
+Epoch 28 [L2] - Training Loss: 1.1223, Test Loss: 1.1090
+Epoch 29 [L2] - Training Loss: 1.1194, Test Loss: 1.1090
+Epoch 30 [L2] - Training Loss: 1.1208, Test Loss: 1.1090
+Epoch 31 [L2] - Training Loss: 1.1215, Test Loss: 1.1090
+Epoch 32 [L2] - Training Loss: 1.1210, Test Loss: 1.1090
+Epoch 33 [L2] - Training Loss: 1.1213, Test Loss: 1.1090
+Epoch 34 [L2] - Training Loss: 1.1212, Test Loss: 1.1090
+Epoch 35 [L2] - Training Loss: 1.1227, Test Loss: 1.1090
+Epoch 36 [L2] - Training Loss: 1.1220, Test Loss: 1.1090
+Epoch 37 [L2] - Training Loss: 1.1204, Test Loss: 1.1090
+Epoch 38 [L2] - Training Loss: 1.1203, Test Loss: 1.1090
+Epoch 39 [L2] - Training Loss: 1.1219, Test Loss: 1.1090
+Epoch 40 [L2] - Training Loss: 1.1217, Test Loss: 1.1090
+Epoch 41 [L2] - Training Loss: 1.1216, Test Loss: 1.1090
+Epoch 42 [L2] - Training Loss: 1.1198, Test Loss: 1.1090
+Epoch 43 [L2] - Training Loss: 1.1209, Test Loss: 1.1090
+Epoch 44 [L2] - Training Loss: 1.1215, Test Loss: 1.1090
+Epoch 45 [L2] - Training Loss: 1.1208, Test Loss: 1.1090
+Epoch 46 [L2] - Training Loss: 1.1215, Test Loss: 1.1090
+Epoch 47 [L2] - Training Loss: 1.1219, Test Loss: 1.1090
+Epoch 48 [L2] - Training Loss: 1.1212, Test Loss: 1.1090
+Epoch 49 [L2] - Training Loss: 1.1215, Test Loss: 1.1090
+Epoch 50 [L2] - Training Loss: 1.1212, Test Loss: 1.1090</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>batch_sizes <span class="op">=</span> {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SGD"</span>: <span class="dv">1</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Batch GD"</span>: <span class="bu">len</span>(train_data),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Mini-Batch GD"</span>: <span class="dv">32</span> </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>models <span class="op">=</span> {name: SimpleFeedForwardNN() <span class="cf">for</span> name <span class="kw">in</span> batch_sizes.keys()}</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>optimizers <span class="op">=</span> {name: optim.SGD(model.parameters(), lr<span class="op">=</span><span class="fl">0.01</span>) <span class="cf">for</span> name, model <span class="kw">in</span> models.items()}</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, batch_size <span class="kw">in</span> batch_sizes.items():</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    train_loader <span class="op">=</span> DataLoader(train_data, batch_size<span class="op">=</span>batch_size, shuffle<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    test_loader <span class="op">=</span> DataLoader(test_data, batch_size<span class="op">=</span>batch_size, shuffle<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    model <span class="op">=</span> models[name]</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    optimizer <span class="op">=</span> optimizers[name]</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Training with </span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">50</span>):</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>        model.train()</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>        start_time <span class="op">=</span> time.time()</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        total_loss <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> inputs, targets <span class="kw">in</span> train_loader:</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>            optimizer.zero_grad()</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>            outputs <span class="op">=</span> model(inputs)</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>            loss <span class="op">=</span> nn.CrossEntropyLoss()(outputs, targets)</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>            loss.backward()</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>            optimizer.step()</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>            total_loss <span class="op">+=</span> loss.item()</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>        end_time <span class="op">=</span> time.time()</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>        elapsed_time <span class="op">=</span> end_time <span class="op">-</span> start_time</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>        test_loss <span class="op">=</span> evaluate_model(model, nn.CrossEntropyLoss(), test_loader)</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Epoch </span><span class="sc">{</span>epoch<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss"> - Training Loss: </span><span class="sc">{</span>total_loss <span class="op">/</span> <span class="bu">len</span>(train_loader)<span class="sc">:.4f}</span><span class="ss">, Test Loss: </span><span class="sc">{</span>test_loss<span class="sc">:.4f}</span><span class="ss">, Time: </span><span class="sc">{</span>elapsed_time<span class="sc">:.2f}</span><span class="ss"> seconds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Training with SGD
+Epoch 1 - Training Loss: 1.0553, Test Loss: 0.9773, Time: 0.15 seconds
+Epoch 2 - Training Loss: 0.8631, Test Loss: 0.7362, Time: 0.18 seconds
+Epoch 3 - Training Loss: 0.6506, Test Loss: 0.5549, Time: 0.19 seconds
+Epoch 4 - Training Loss: 0.5162, Test Loss: 0.4322, Time: 0.21 seconds
+Epoch 5 - Training Loss: 0.4206, Test Loss: 0.3415, Time: 0.22 seconds
+Epoch 6 - Training Loss: 0.3529, Test Loss: 0.2750, Time: 0.47 seconds
+Epoch 7 - Training Loss: 0.3041, Test Loss: 0.2290, Time: 0.41 seconds
+Epoch 8 - Training Loss: 0.2683, Test Loss: 0.1958, Time: 0.21 seconds
+Epoch 9 - Training Loss: 0.2309, Test Loss: 0.1876, Time: 0.23 seconds
+Epoch 10 - Training Loss: 0.2134, Test Loss: 0.1417, Time: 0.21 seconds
+Epoch 11 - Training Loss: 0.1875, Test Loss: 0.1288, Time: 0.20 seconds
+Epoch 12 - Training Loss: 0.1656, Test Loss: 0.1121, Time: 0.18 seconds
+Epoch 13 - Training Loss: 0.1483, Test Loss: 0.1029, Time: 0.20 seconds
+Epoch 14 - Training Loss: 0.1320, Test Loss: 0.0930, Time: 0.17 seconds
+Epoch 15 - Training Loss: 0.1103, Test Loss: 0.0832, Time: 0.18 seconds
+Epoch 16 - Training Loss: 0.1109, Test Loss: 0.0765, Time: 0.17 seconds
+Epoch 17 - Training Loss: 0.1012, Test Loss: 0.0742, Time: 0.17 seconds
+Epoch 18 - Training Loss: 0.0897, Test Loss: 0.0798, Time: 0.16 seconds
+Epoch 19 - Training Loss: 0.0912, Test Loss: 0.0610, Time: 0.18 seconds
+Epoch 20 - Training Loss: 0.0867, Test Loss: 0.0601, Time: 0.16 seconds
+Epoch 21 - Training Loss: 0.0840, Test Loss: 0.0594, Time: 0.21 seconds
+Epoch 22 - Training Loss: 0.0816, Test Loss: 0.0548, Time: 0.17 seconds
+Epoch 23 - Training Loss: 0.0800, Test Loss: 0.0560, Time: 0.19 seconds
+Epoch 24 - Training Loss: 0.0744, Test Loss: 0.0525, Time: 0.18 seconds
+Epoch 25 - Training Loss: 0.0749, Test Loss: 0.0488, Time: 0.20 seconds
+Epoch 26 - Training Loss: 0.0752, Test Loss: 0.0456, Time: 0.16 seconds
+Epoch 27 - Training Loss: 0.0736, Test Loss: 0.0476, Time: 0.17 seconds
+Epoch 28 - Training Loss: 0.0709, Test Loss: 0.0455, Time: 0.15 seconds
+Epoch 29 - Training Loss: 0.0725, Test Loss: 0.0393, Time: 0.19 seconds
+Epoch 30 - Training Loss: 0.0664, Test Loss: 0.0437, Time: 0.18 seconds
+Epoch 31 - Training Loss: 0.0670, Test Loss: 0.0447, Time: 0.28 seconds
+Epoch 32 - Training Loss: 0.0616, Test Loss: 0.0389, Time: 0.25 seconds
+Epoch 33 - Training Loss: 0.0665, Test Loss: 0.0387, Time: 0.20 seconds
+Epoch 34 - Training Loss: 0.0669, Test Loss: 0.0353, Time: 0.26 seconds
+Epoch 35 - Training Loss: 0.0612, Test Loss: 0.0379, Time: 0.20 seconds
+Epoch 36 - Training Loss: 0.0633, Test Loss: 0.0323, Time: 0.17 seconds
+Epoch 37 - Training Loss: 0.0623, Test Loss: 0.0262, Time: 0.18 seconds
+Epoch 38 - Training Loss: 0.0652, Test Loss: 0.0250, Time: 0.18 seconds
+Epoch 39 - Training Loss: 0.0661, Test Loss: 0.0245, Time: 0.19 seconds
+Epoch 40 - Training Loss: 0.0564, Test Loss: 0.0313, Time: 0.17 seconds
+Epoch 41 - Training Loss: 0.0646, Test Loss: 0.0345, Time: 0.18 seconds
+Epoch 42 - Training Loss: 0.0579, Test Loss: 0.0423, Time: 0.17 seconds
+Epoch 43 - Training Loss: 0.0616, Test Loss: 0.0519, Time: 0.18 seconds
+Epoch 44 - Training Loss: 0.0648, Test Loss: 0.0313, Time: 0.17 seconds
+Epoch 45 - Training Loss: 0.0612, Test Loss: 0.0310, Time: 0.17 seconds
+Epoch 46 - Training Loss: 0.0635, Test Loss: 0.0298, Time: 0.17 seconds
+Epoch 47 - Training Loss: 0.0598, Test Loss: 0.0356, Time: 0.18 seconds
+Epoch 48 - Training Loss: 0.0636, Test Loss: 0.0289, Time: 0.17 seconds
+Epoch 49 - Training Loss: 0.0636, Test Loss: 0.0318, Time: 0.18 seconds
+Epoch 50 - Training Loss: 0.0523, Test Loss: 0.0466, Time: 0.17 seconds
+Training with Batch GD
+Epoch 1 - Training Loss: 1.1737, Test Loss: 1.1779, Time: 0.01 seconds
+Epoch 2 - Training Loss: 1.1718, Test Loss: 1.1761, Time: 0.00 seconds
+Epoch 3 - Training Loss: 1.1699, Test Loss: 1.1744, Time: 0.01 seconds
+Epoch 4 - Training Loss: 1.1681, Test Loss: 1.1727, Time: 0.00 seconds
+Epoch 5 - Training Loss: 1.1663, Test Loss: 1.1710, Time: 0.01 seconds
+Epoch 6 - Training Loss: 1.1645, Test Loss: 1.1693, Time: 0.01 seconds
+Epoch 7 - Training Loss: 1.1628, Test Loss: 1.1677, Time: 0.01 seconds
+Epoch 8 - Training Loss: 1.1610, Test Loss: 1.1660, Time: 0.00 seconds
+Epoch 9 - Training Loss: 1.1593, Test Loss: 1.1644, Time: 0.01 seconds
+Epoch 10 - Training Loss: 1.1576, Test Loss: 1.1628, Time: 0.01 seconds
+Epoch 11 - Training Loss: 1.1560, Test Loss: 1.1613, Time: 0.01 seconds
+Epoch 12 - Training Loss: 1.1543, Test Loss: 1.1597, Time: 0.01 seconds
+Epoch 13 - Training Loss: 1.1527, Test Loss: 1.1582, Time: 0.01 seconds
+Epoch 14 - Training Loss: 1.1511, Test Loss: 1.1566, Time: 0.01 seconds
+Epoch 15 - Training Loss: 1.1495, Test Loss: 1.1551, Time: 0.00 seconds
+Epoch 16 - Training Loss: 1.1480, Test Loss: 1.1537, Time: 0.01 seconds
+Epoch 17 - Training Loss: 1.1464, Test Loss: 1.1522, Time: 0.01 seconds
+Epoch 18 - Training Loss: 1.1449, Test Loss: 1.1507, Time: 0.01 seconds
+Epoch 19 - Training Loss: 1.1433, Test Loss: 1.1493, Time: 0.01 seconds
+Epoch 20 - Training Loss: 1.1418, Test Loss: 1.1478, Time: 0.01 seconds
+Epoch 21 - Training Loss: 1.1403, Test Loss: 1.1464, Time: 0.01 seconds
+Epoch 22 - Training Loss: 1.1389, Test Loss: 1.1450, Time: 0.01 seconds
+Epoch 23 - Training Loss: 1.1374, Test Loss: 1.1436, Time: 0.01 seconds
+Epoch 24 - Training Loss: 1.1360, Test Loss: 1.1423, Time: 0.01 seconds
+Epoch 25 - Training Loss: 1.1345, Test Loss: 1.1409, Time: 0.00 seconds
+Epoch 26 - Training Loss: 1.1331, Test Loss: 1.1396, Time: 0.01 seconds
+Epoch 27 - Training Loss: 1.1317, Test Loss: 1.1382, Time: 0.01 seconds
+Epoch 28 - Training Loss: 1.1303, Test Loss: 1.1369, Time: 0.01 seconds
+Epoch 29 - Training Loss: 1.1290, Test Loss: 1.1355, Time: 0.01 seconds
+Epoch 30 - Training Loss: 1.1276, Test Loss: 1.1342, Time: 0.01 seconds
+Epoch 31 - Training Loss: 1.1262, Test Loss: 1.1329, Time: 0.00 seconds
+Epoch 32 - Training Loss: 1.1249, Test Loss: 1.1316, Time: 0.00 seconds
+Epoch 33 - Training Loss: 1.1235, Test Loss: 1.1303, Time: 0.01 seconds
+Epoch 34 - Training Loss: 1.1222, Test Loss: 1.1290, Time: 0.01 seconds
+Epoch 35 - Training Loss: 1.1209, Test Loss: 1.1278, Time: 0.01 seconds
+Epoch 36 - Training Loss: 1.1196, Test Loss: 1.1265, Time: 0.01 seconds
+Epoch 37 - Training Loss: 1.1183, Test Loss: 1.1252, Time: 0.01 seconds
+Epoch 38 - Training Loss: 1.1170, Test Loss: 1.1240, Time: 0.01 seconds
+Epoch 39 - Training Loss: 1.1157, Test Loss: 1.1227, Time: 0.01 seconds
+Epoch 40 - Training Loss: 1.1145, Test Loss: 1.1215, Time: 0.01 seconds
+Epoch 41 - Training Loss: 1.1132, Test Loss: 1.1203, Time: 0.01 seconds
+Epoch 42 - Training Loss: 1.1119, Test Loss: 1.1190, Time: 0.01 seconds
+Epoch 43 - Training Loss: 1.1107, Test Loss: 1.1178, Time: 0.01 seconds
+Epoch 44 - Training Loss: 1.1095, Test Loss: 1.1166, Time: 0.00 seconds
+Epoch 45 - Training Loss: 1.1082, Test Loss: 1.1154, Time: 0.01 seconds
+Epoch 46 - Training Loss: 1.1070, Test Loss: 1.1142, Time: 0.01 seconds
+Epoch 47 - Training Loss: 1.1058, Test Loss: 1.1130, Time: 0.01 seconds
+Epoch 48 - Training Loss: 1.1046, Test Loss: 1.1118, Time: 0.01 seconds
+Epoch 49 - Training Loss: 1.1033, Test Loss: 1.1106, Time: 0.01 seconds
+Epoch 50 - Training Loss: 1.1021, Test Loss: 1.1094, Time: 0.01 seconds
+Training with Mini-Batch GD
+Epoch 1 - Training Loss: 1.1446, Test Loss: 1.1362, Time: 0.01 seconds
+Epoch 2 - Training Loss: 1.1388, Test Loss: 1.1324, Time: 0.01 seconds
+Epoch 3 - Training Loss: 1.1357, Test Loss: 1.1287, Time: 0.01 seconds
+Epoch 4 - Training Loss: 1.1307, Test Loss: 1.1252, Time: 0.01 seconds
+Epoch 5 - Training Loss: 1.1276, Test Loss: 1.1219, Time: 0.02 seconds
+Epoch 6 - Training Loss: 1.1255, Test Loss: 1.1188, Time: 0.01 seconds
+Epoch 7 - Training Loss: 1.1223, Test Loss: 1.1157, Time: 0.02 seconds
+Epoch 8 - Training Loss: 1.1185, Test Loss: 1.1128, Time: 0.02 seconds
+Epoch 9 - Training Loss: 1.1150, Test Loss: 1.1101, Time: 0.01 seconds
+Epoch 10 - Training Loss: 1.1135, Test Loss: 1.1075, Time: 0.01 seconds
+Epoch 11 - Training Loss: 1.1100, Test Loss: 1.1049, Time: 0.01 seconds
+Epoch 12 - Training Loss: 1.1084, Test Loss: 1.1024, Time: 0.02 seconds
+Epoch 13 - Training Loss: 1.1042, Test Loss: 1.1000, Time: 0.01 seconds
+Epoch 14 - Training Loss: 1.1012, Test Loss: 1.0976, Time: 0.01 seconds
+Epoch 15 - Training Loss: 1.1010, Test Loss: 1.0952, Time: 0.01 seconds
+Epoch 16 - Training Loss: 1.0976, Test Loss: 1.0929, Time: 0.02 seconds
+Epoch 17 - Training Loss: 1.0950, Test Loss: 1.0907, Time: 0.01 seconds
+Epoch 18 - Training Loss: 1.0927, Test Loss: 1.0886, Time: 0.02 seconds
+Epoch 19 - Training Loss: 1.0909, Test Loss: 1.0864, Time: 0.02 seconds
+Epoch 20 - Training Loss: 1.0892, Test Loss: 1.0843, Time: 0.02 seconds
+Epoch 21 - Training Loss: 1.0872, Test Loss: 1.0823, Time: 0.02 seconds
+Epoch 22 - Training Loss: 1.0843, Test Loss: 1.0803, Time: 0.02 seconds
+Epoch 23 - Training Loss: 1.0844, Test Loss: 1.0783, Time: 0.01 seconds
+Epoch 24 - Training Loss: 1.0803, Test Loss: 1.0763, Time: 0.01 seconds
+Epoch 25 - Training Loss: 1.0790, Test Loss: 1.0743, Time: 0.01 seconds
+Epoch 26 - Training Loss: 1.0765, Test Loss: 1.0724, Time: 0.01 seconds
+Epoch 27 - Training Loss: 1.0758, Test Loss: 1.0703, Time: 0.01 seconds
+Epoch 28 - Training Loss: 1.0732, Test Loss: 1.0682, Time: 0.01 seconds
+Epoch 29 - Training Loss: 1.0708, Test Loss: 1.0661, Time: 0.01 seconds
+Epoch 30 - Training Loss: 1.0694, Test Loss: 1.0638, Time: 0.01 seconds
+Epoch 31 - Training Loss: 1.0677, Test Loss: 1.0616, Time: 0.02 seconds
+Epoch 32 - Training Loss: 1.0653, Test Loss: 1.0594, Time: 0.02 seconds
+Epoch 33 - Training Loss: 1.0627, Test Loss: 1.0571, Time: 0.02 seconds
+Epoch 34 - Training Loss: 1.0601, Test Loss: 1.0547, Time: 0.02 seconds
+Epoch 35 - Training Loss: 1.0592, Test Loss: 1.0523, Time: 0.02 seconds
+Epoch 36 - Training Loss: 1.0571, Test Loss: 1.0499, Time: 0.01 seconds
+Epoch 37 - Training Loss: 1.0546, Test Loss: 1.0475, Time: 0.02 seconds
+Epoch 38 - Training Loss: 1.0515, Test Loss: 1.0450, Time: 0.02 seconds
+Epoch 39 - Training Loss: 1.0497, Test Loss: 1.0424, Time: 0.02 seconds
+Epoch 40 - Training Loss: 1.0473, Test Loss: 1.0398, Time: 0.01 seconds
+Epoch 41 - Training Loss: 1.0457, Test Loss: 1.0371, Time: 0.01 seconds
+Epoch 42 - Training Loss: 1.0438, Test Loss: 1.0344, Time: 0.01 seconds
+Epoch 43 - Training Loss: 1.0401, Test Loss: 1.0314, Time: 0.01 seconds
+Epoch 44 - Training Loss: 1.0370, Test Loss: 1.0284, Time: 0.02 seconds
+Epoch 45 - Training Loss: 1.0362, Test Loss: 1.0253, Time: 0.01 seconds
+Epoch 46 - Training Loss: 1.0322, Test Loss: 1.0221, Time: 0.02 seconds
+Epoch 47 - Training Loss: 1.0301, Test Loss: 1.0189, Time: 0.02 seconds
+Epoch 48 - Training Loss: 1.0259, Test Loss: 1.0152, Time: 0.01 seconds
+Epoch 49 - Training Loss: 1.0237, Test Loss: 1.0115, Time: 0.01 seconds
+Epoch 50 - Training Loss: 1.0198, Test Loss: 1.0079, Time: 0.01 seconds</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>iris <span class="op">=</span> load_iris()</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> iris[<span class="st">'data'</span>]</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> iris[<span class="st">'target'</span>]</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> scaler.fit_transform(X)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> torch.tensor(X, dtype<span class="op">=</span>torch.float32)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> torch.tensor(y, dtype<span class="op">=</span>torch.<span class="bu">long</span>)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>train_data <span class="op">=</span> TensorDataset(X_train, y_train)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>test_data <span class="op">=</span> TensorDataset(X_test, y_test)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>train_loader <span class="op">=</span> DataLoader(train_data, batch_size<span class="op">=</span><span class="dv">32</span>, shuffle<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>test_loader <span class="op">=</span> DataLoader(test_data, batch_size<span class="op">=</span><span class="dv">32</span>, shuffle<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>loss_functions <span class="op">=</span> {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CrossEntropy"</span>: nn.CrossEntropyLoss(),</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MSELoss"</span>: nn.MSELoss()</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>regularization <span class="op">=</span> {</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"None"</span>: {<span class="st">'weight_decay'</span>: <span class="fl">0.0</span>, <span class="st">'dropout'</span>: <span class="fl">0.0</span>},</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"L1"</span>: {<span class="st">'weight_decay'</span>: <span class="fl">0.01</span>, <span class="st">'dropout'</span>: <span class="fl">0.0</span>}</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>optimizers <span class="op">=</span> {</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SGD"</span>: optim.SGD</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> {}</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> loss_name, criterion <span class="kw">in</span> loss_functions.items():</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> reg_name, reg_params <span class="kw">in</span> regularization.items():</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> opt_name, opt_class <span class="kw">in</span> optimizers.items():</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>            config_name <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>loss_name<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>reg_name<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>opt_name<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>            model <span class="op">=</span> SimpleFeedForwardNN()</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>            optimizer <span class="op">=</span> opt_class(model.parameters(), lr<span class="op">=</span><span class="fl">0.01</span>, weight_decay<span class="op">=</span>reg_params[<span class="st">'weight_decay'</span>])</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>            train_loss, val_loss <span class="op">=</span> [], []</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>            train_accuracy, val_accuracy <span class="op">=</span> [], []</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>            train_f1, val_f1 <span class="op">=</span> [], []</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>            start_time <span class="op">=</span> time.time()</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">50</span>):</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>                model.train()</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>                epoch_train_loss <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>                y_true_train, y_pred_train <span class="op">=</span> [], []</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> inputs, targets <span class="kw">in</span> train_loader:</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>                    optimizer.zero_grad()</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>                    outputs <span class="op">=</span> model(inputs)</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> loss_name <span class="kw">in</span> [<span class="st">"MSELoss"</span>, <span class="st">"SmoothL1Loss"</span>]:</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>                        criterion_targets <span class="op">=</span> torch.nn.functional.one_hot(targets, <span class="dv">3</span>).<span class="bu">float</span>()</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">else</span>:</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>                        criterion_targets <span class="op">=</span> targets</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>                    loss <span class="op">=</span> criterion(outputs, criterion_targets)</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>                    loss.backward()</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>                    optimizer.step()</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>                    epoch_train_loss <span class="op">+=</span> loss.item()</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>                    _, predicted <span class="op">=</span> torch.<span class="bu">max</span>(outputs.data, <span class="dv">1</span>)</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>                    y_true_train.extend(targets.tolist())</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>                    y_pred_train.extend(predicted.tolist())</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>                train_loss.append(epoch_train_loss <span class="op">/</span> <span class="bu">len</span>(train_loader))</span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>                train_accuracy.append(accuracy_score(y_true_train, y_pred_train))</span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>                train_f1.append(f1_score(y_true_train, y_pred_train, average<span class="op">=</span><span class="st">'weighted'</span>))</span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Evaluación del modelo en el conjunto de validación</span></span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>                model.<span class="bu">eval</span>()</span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>                epoch_val_loss <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>                y_true_val, y_pred_val <span class="op">=</span> [], []</span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>                <span class="cf">with</span> torch.no_grad():</span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">for</span> inputs, targets <span class="kw">in</span> test_loader:</span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a>                        outputs <span class="op">=</span> model(inputs)</span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">if</span> loss_name <span class="kw">in</span> [<span class="st">"MSELoss"</span>, <span class="st">"SmoothL1Loss"</span>]:</span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>                            criterion_targets <span class="op">=</span> torch.nn.functional.one_hot(targets, <span class="dv">3</span>).<span class="bu">float</span>()</span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">else</span>:</span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a>                            criterion_targets <span class="op">=</span> targets</span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a>                        loss <span class="op">=</span> criterion(outputs, criterion_targets)</span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a>                        epoch_val_loss <span class="op">+=</span> loss.item()</span>
+<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a>                        _, predicted <span class="op">=</span> torch.<span class="bu">max</span>(outputs.data, <span class="dv">1</span>)</span>
+<span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a>                        y_true_val.extend(targets.tolist())</span>
+<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a>                        y_pred_val.extend(predicted.tolist())</span>
+<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a>                val_loss.append(epoch_val_loss <span class="op">/</span> <span class="bu">len</span>(test_loader))</span>
+<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a>                val_accuracy.append(accuracy_score(y_true_val, y_pred_val))</span>
+<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a>                val_f1.append(f1_score(y_true_val, y_pred_val, average<span class="op">=</span><span class="st">'weighted'</span>))</span>
+<span id="cb13-59"><a href="#cb13-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-60"><a href="#cb13-60" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Visualizar las curvas</span></span>
+<span id="cb13-61"><a href="#cb13-61" aria-hidden="true" tabindex="-1"></a>            plt.figure(figsize<span class="op">=</span>(<span class="dv">16</span>, <span class="dv">4</span>))</span>
+<span id="cb13-62"><a href="#cb13-62" aria-hidden="true" tabindex="-1"></a>            plt.subplot(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">1</span>)</span>
+<span id="cb13-63"><a href="#cb13-63" aria-hidden="true" tabindex="-1"></a>            plt.plot(train_loss, label<span class="op">=</span><span class="st">'Train Loss'</span>)</span>
+<span id="cb13-64"><a href="#cb13-64" aria-hidden="true" tabindex="-1"></a>            plt.plot(val_loss, label<span class="op">=</span><span class="st">'Validation Loss'</span>)</span>
+<span id="cb13-65"><a href="#cb13-65" aria-hidden="true" tabindex="-1"></a>            plt.title(<span class="ss">f'Loss curves for </span><span class="sc">{</span>config_name<span class="sc">}</span><span class="ss">'</span>,  fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb13-66"><a href="#cb13-66" aria-hidden="true" tabindex="-1"></a>            plt.legend()</span>
+<span id="cb13-67"><a href="#cb13-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-68"><a href="#cb13-68" aria-hidden="true" tabindex="-1"></a>            plt.subplot(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">2</span>)</span>
+<span id="cb13-69"><a href="#cb13-69" aria-hidden="true" tabindex="-1"></a>            plt.plot(train_accuracy, label<span class="op">=</span><span class="st">'Train Accuracy'</span>)</span>
+<span id="cb13-70"><a href="#cb13-70" aria-hidden="true" tabindex="-1"></a>            plt.plot(val_accuracy, label<span class="op">=</span><span class="st">'Validation Accuracy'</span>)</span>
+<span id="cb13-71"><a href="#cb13-71" aria-hidden="true" tabindex="-1"></a>            plt.title(<span class="ss">f'Accuracy curves for </span><span class="sc">{</span>config_name<span class="sc">}</span><span class="ss">'</span>,  fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb13-72"><a href="#cb13-72" aria-hidden="true" tabindex="-1"></a>            plt.legend()</span>
+<span id="cb13-73"><a href="#cb13-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-74"><a href="#cb13-74" aria-hidden="true" tabindex="-1"></a>            plt.subplot(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">3</span>)</span>
+<span id="cb13-75"><a href="#cb13-75" aria-hidden="true" tabindex="-1"></a>            plt.plot(train_f1, label<span class="op">=</span><span class="st">'Train F1 Score'</span>)</span>
+<span id="cb13-76"><a href="#cb13-76" aria-hidden="true" tabindex="-1"></a>            plt.plot(val_f1, label<span class="op">=</span><span class="st">'Validation F1 Score'</span>)</span>
+<span id="cb13-77"><a href="#cb13-77" aria-hidden="true" tabindex="-1"></a>            plt.title(<span class="ss">f'F1 Score curves for </span><span class="sc">{</span>config_name<span class="sc">}</span><span class="ss">'</span>,  fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb13-78"><a href="#cb13-78" aria-hidden="true" tabindex="-1"></a>            plt.legend()</span>
+<span id="cb13-79"><a href="#cb13-79" aria-hidden="true" tabindex="-1"></a>            plt.show()</span>
+<span id="cb13-80"><a href="#cb13-80" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb13-81"><a href="#cb13-81" aria-hidden="true" tabindex="-1"></a>            end_time <span class="op">=</span> time.time()</span>
+<span id="cb13-82"><a href="#cb13-82" aria-hidden="true" tabindex="-1"></a>            total_time <span class="op">=</span> end_time <span class="op">-</span> start_time</span>
+<span id="cb13-83"><a href="#cb13-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-84"><a href="#cb13-84" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"For </span><span class="sc">{</span>config_name<span class="sc">}</span><span class="ss">:"</span>)</span>
+<span id="cb13-85"><a href="#cb13-85" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"  - Training time: </span><span class="sc">{</span>total_time<span class="sc">:.4f}</span><span class="ss"> seconds"</span>)</span>
+<span id="cb13-86"><a href="#cb13-86" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"  - Final Training Accuracy: </span><span class="sc">{</span>train_accuracy[<span class="op">-</span><span class="dv">1</span>]<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb13-87"><a href="#cb13-87" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"  - Final Validation Accuracy: </span><span class="sc">{</span>val_accuracy[<span class="op">-</span><span class="dv">1</span>]<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb13-88"><a href="#cb13-88" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"  - Final Training F1 Score: </span><span class="sc">{</span>train_f1[<span class="op">-</span><span class="dv">1</span>]<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb13-89"><a href="#cb13-89" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"  - Final Validation F1 Score: </span><span class="sc">{</span>val_f1[<span class="op">-</span><span class="dv">1</span>]<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb13-90"><a href="#cb13-90" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>()</span>
+<span id="cb13-91"><a href="#cb13-91" aria-hidden="true" tabindex="-1"></a>            results[config_name] <span class="op">=</span> {<span class="st">'train_loss'</span>: train_loss, <span class="st">'val_loss'</span>: val_loss,<span class="st">'train_accuracy'</span>: train_accuracy, <span class="st">'val_accuracy'</span>: val_accuracy,<span class="st">'train_f1'</span>: train_f1, <span class="st">'val_f1'</span>: val_f1, <span class="st">'time'</span>: total_time}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="HDT2_files/figure-html/cell-10-output-1.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>For CrossEntropy_None_SGD:
+  - Training time: 3.4490 seconds
+  - Final Training Accuracy: 0.6917
+  - Final Validation Accuracy: 0.6333
+  - Final Training F1 Score: 0.6110
+  - Final Validation F1 Score: 0.5195
+</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="HDT2_files/figure-html/cell-10-output-3.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>For CrossEntropy_L1_SGD:
+  - Training time: 3.5650 seconds
+  - Final Training Accuracy: 0.6583
+  - Final Validation Accuracy: 0.7333
+  - Final Training F1 Score: 0.6225
+  - Final Validation F1 Score: 0.6855
+</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="HDT2_files/figure-html/cell-10-output-5.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>For MSELoss_None_SGD:
+  - Training time: 3.5990 seconds
+  - Final Training Accuracy: 0.6167
+  - Final Validation Accuracy: 0.6667
+  - Final Training F1 Score: 0.5167
+  - Final Validation F1 Score: 0.5619
+</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="HDT2_files/figure-html/cell-10-output-7.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>For MSELoss_L1_SGD:
+  - Training time: 3.6680 seconds
+  - Final Training Accuracy: 0.7583
+  - Final Validation Accuracy: 0.8000
+  - Final Training F1 Score: 0.7198
+  - Final Validation F1 Score: 0.7714
+</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> evaluate_model(model, criterion, test_loader, loss_name):</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    model.<span class="bu">eval</span>()</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    total_loss <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> torch.no_grad():</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> inputs, targets <span class="kw">in</span> test_loader:</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>            outputs <span class="op">=</span> model(inputs)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> loss_name <span class="kw">in</span> [<span class="st">"MSELoss"</span>, <span class="st">"SmoothL1Loss"</span>]:</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>                targets <span class="op">=</span> torch.nn.functional.one_hot(targets, <span class="dv">3</span>).<span class="bu">float</span>()</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>            loss <span class="op">=</span> criterion(outputs, targets)</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>            total_loss <span class="op">+=</span> loss.item()</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> total_loss <span class="op">/</span> <span class="bu">len</span>(test_loader)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>test_loss <span class="op">=</span> evaluate_model(model, criterion, test_loader, loss_name)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>test_loss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<pre><code>0.14248530566692352</code></pre>
+</div>
+</div>
+<ul>
+<li>Para el modelo utilizando la funcion de pérdida de Cross Entropy, ninguna regularización y el optimizer SGD se puede ver que la curva de pérdida se reduce casi linealmente en lo que aumentan las épocas. La train loss sigue la misma tendencia y se apega bastante a la validation loss, aunque con un poco de ruido, lo que indica que el modelo no está sobreajustado. Por otro lado con lo que respecta a la curva de accuracy, el validation accuracy es una linea recta, mientras que el train accuracy sufre muchas variaciones hasta llegar al 0.69, aunque en la gráfica se vean estas variaciones pronunciadas cabe resaltar que en la escala es bastante cercana siendo de un rango de 0.62 hasta 0.69 lo que indica que sí tiene un accuracy similar al validation accuracy. Por último el F1 score, al igual que el accuracy esta en una escala pequeña y sigue mostrando una variación en el train, con un aumento del 0.1 comparado al validation.</li>
+<li>El siguiente modelo que tiene igual la función de pérdida de Cross Entropy, regularización de L1 con un decay del 0.01 y un dropout del 0.0, y el optimizer SGD, también muestra en el loss un comportamiento parecido, aunque la train loss este separada de la validation loss, tienen el mismo comportamiento y se reducen en forma de curva en lo que avanzan las épocas. Por otro lado el accuracy y el F1 score tienen un comportamiento bastante parecido y valores casi iguales. El validation aumenta con pequeñas variaciones en lo que avanzan las épocas, mientras que el train tiene una variación más pronunciada, pero en la escala se ve que es muy cercana al validation.</li>
+<li>Con el MSELoss como función de pérdida, ninguna regularización y el SGD como optimizer, en lo que respecta a la curva de pérdida, son casi idénticas el train loss y el validation loss, teniendo una curva que se reduce y pareciera estabilizarse en las últimas épocas. Por otro lado el accuracy y el F1 score tienen un comportamiento parecido al modelo pasado ya que el train y validation son bastante parecidos, mostrando una tendencia a aumentar en lo que avanzan las épocas con pequeñas variaciones.</li>
+<li>En el último modelo que tiene la función de pérdida de MSELoss, la regularización L1 con un decay del 0.01 y un dropout del 0.0 y el optimizer SGD, se puede observar que las tres gráficas de loss, accuracy y de F1 Score la train loss se apega mucho al validation loss. La de loss tiene una tendencia a reducirse en lo que avanzan las épocas, mientras que el accuracy y el F1 score tienen una tendencia a aumentar en lo que avanzan las épocas, con pequeñas variaciones. Es el modelo en el que las curvas de train y validation son casi idénticas y se ve reflejado en el valor final de accuracy y F1 score.</li>
+</ul>
+<p>Existen varias técnicas de regularización y lo que permite que se obtengan buenos resultados es saber cual utilizar dependiendo del modelo que se esta realizando y la naturaleza del problema que se quiere resolver. Aunque siempre es bueno experimentar con diferentes técnicas de regularización para ver cual se ajusta mejor al modelo, se debe tener en cuenta que no todas las técnicas de regularización son compatibles con todos los modelos. El optimizador puede tener gran impacto en el modelo, ya que este es el que se encarga de actualizar los pesos y bias de la red neuronal, por lo que es importante saber cual utilizar dependiendo del modelo y el problema que se quiere resolver. Por último la función de pérdida es importante ya que es la que se encarga de calcular el error entre la salida de la red neuronal y el valor real.</p>
+<section id="parte-2" class="level2">
+<h2 class="anchored" data-anchor-id="parte-2">Parte 2</h2>
+<p><strong>¿Por qué se utiliza la atención de múltiples cabezales en Transformer?</strong></p>
+<p>Se realiza la atención de múltiples cabezales en Transformer para poder permitr que el modelo pueda atender conjuntamente información de diferentes subespacios de representación en diferentes posiciones. Esto logra que el modelo pueda comprender patrones más complejos y mejorar su capacidad de aprendizaje a largo plazo.</p>
+<p><strong>¿Cómo se incorporan los positional encodings en el modelo Transformer?</strong></p>
+<p>Se utilizan los positional encodings en la arquitectura para poder capturar la información de posición en las secuencias de entrada y salida. Estos son vectores numéricos que se suman a los embeddings de palabras en cada posición para representar su posición relativa en la secuencia, logrando así mantener la coherencia espacial en la representación de la secuencia.</p>
+<p><strong>¿Cuáles son algunas aplicaciones de la arquitectura Transformer más allá de la machine translation?</strong></p>
+<p>Entre algunas de las áreas que se puede utilizar la arquitectura de Transformer son:</p>
+<ul>
+<li><p>Procesamiento de imágenes: La arquitectura Transformer puede ser adaptada para manejar entradas y salidas que no sean texto, sino que sean imágenes. Esto permitiría aplicar modelos de atención a tareas de procesamiento de imágenes, como reconocimiento de objetos o segmentación semántica.</p></li>
+<li><p>Procesamiento de audios: De la misma forma que en el caso anterior se podría adaptar la arquitectura para que las entradas fueran audios y ser utilizadas para el reconocimiento de voces o generación de sonido.</p></li>
+<li><p>Asi mismo podria adaptarse para el procesamiento de videos, donde se podría utilizar para la generación de videos o para la detección de objetos en videos.</p></li>
+</ul>
+<p><strong>¿Cuál es la principal innovación de la arquitectura Transformer?</strong></p>
+<p>La principal innovación de la arquitectura Transformer es que se basa por completo en diferentes mecanismos de atención para establecer las dependencias globales entre las secuencias de entrada y de salida. Además de ello en la arquitectura Transformer no se utilizan capas recurrentes, sino que utiliza las ya mencionadas capas de autoatención y conexiones residuales para mejorar la eficiencia computacional así como también una mejor paralelización.</p>
+<p><strong>¿Cómo funciona el mecanismo de atención del scaled dot-product?</strong></p>
+<p>Este mecanismo consiste en calcular el producto escalar entre una consulta y todas las claves, dividir cada producto por la raíz cuadrada de la dimensión de las claves y aplicar una función softmax para obtener los pesos de los valores. Esto lo que permite es que el modelo puedo asignar diferentes pesos a los valores en función de se compatibilidad con la consulta realizada.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
